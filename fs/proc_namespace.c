@@ -160,6 +160,11 @@ static int show_mountinfo(struct seq_file *m, struct vfsmount *mnt)
 	if (IS_MNT_SHARED(r))
 		seq_printf(m, " shared:%i", r->mnt_group_id);
 	if (IS_MNT_SLAVE(r)) {
+		int master = r->mnt_master->mnt_group_id;
+		int dom = get_dominating_id(r, &p->root);
+		seq_printf(m, " master:%i", master);
+		if (dom && dom != master)
+			seq_printf(m, " propagate_from:%i", dom);
 	}
 	if (IS_MNT_UNBINDABLE(r))
 		seq_puts(m, " unbindable");

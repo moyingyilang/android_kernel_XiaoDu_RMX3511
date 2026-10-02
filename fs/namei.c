@@ -3143,6 +3143,7 @@ static inline int open_to_namei_flags(int flag)
 static int may_o_create(const struct path *dir, struct dentry *dentry, umode_t mode)
 {
 	struct user_namespace *s_user_ns;
+	int error = security_path_mknod(dir, dentry, mode, 0);
 	if (error)
 		return error;
 

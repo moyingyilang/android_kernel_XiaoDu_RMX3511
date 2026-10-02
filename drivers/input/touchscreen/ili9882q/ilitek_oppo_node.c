@@ -2,7 +2,9 @@
 
 extern unsigned char g_user_buf[USER_STR_BUFF];
 extern int touch_black_test;
-extern tp_gesture;
+/* [Fuck4DuerOS] 原为 extern tp_gesture; 缺类型，触发 -Werror=implicit-int。
+ * ilitek_v3.c 中定义为 extern int tp_gesture; 且按 1/0 赋值，故为 int。 */
+extern int tp_gesture;
 
 
 typedef struct {

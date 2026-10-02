@@ -122,10 +122,11 @@ struct zram {
 	spinlock_t wb_limit_lock;
 	bool wb_limit_enable;
 	u64 bd_wb_limit;
-	struct block_device *bdev;
-	unsigned int old_block_size;
 	unsigned long *bitmap;
-	unsigned long nr_pages;
+	/* [Fuck4DuerOS] bdev / old_block_size / nr_pages 原在此处也有声明，
+	 * 但下面的 (#ifdef ZRAM_WRITEBACK || HYBRIDSWAP_CORE) 又声明了一遍，
+	 * 两者同时开启就会 duplicate member。这里只保留 bitmap，
+	 * 其余交给下面那段（它的条件已覆盖本块）。 */
 #endif
 #ifdef CONFIG_ZRAM_MEMORY_TRACKING
 	struct dentry *debugfs_dir;

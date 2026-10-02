@@ -1,3 +1,8 @@
+# [Fuck4DuerOS] musb_sprd.c 用 #include <../../input/touchscreen/ili9882q/...>
+# 相对路径尖括号包含。注意原有的 CFLAGS_musb_trace.o := -I$(src) 只作用于
+# musb_trace.o，对 musb_sprd.o 无效，故补全局。
+ccflags-y += -I$(src)
+
 # SPDX-License-Identifier: GPL-2.0
 #
 # for USB OTG silicon based on Mentor Graphics INVENTRA designs

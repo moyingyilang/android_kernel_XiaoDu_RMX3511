@@ -40,9 +40,7 @@ extra-$(CONFIG_LTO_CLANG)   += module-lto.lds
 
 subdir-$(CONFIG_GCC_PLUGINS) += gcc-plugins
 subdir-$(CONFIG_MODVERSIONS) += genksyms
-# [Fuck4DuerOS] 在 Android/bionic 上编译时跳过 selinux 主机工具：
-# 它们只用于策略开发，不参与内核镜像；且与 bionic 的 <signal.h> 冲突。
-# subdir-$(CONFIG_SECURITY_SELINUX) += selinux
+subdir-$(CONFIG_SECURITY_SELINUX) += selinux
 
 # Let clean descend into subdirs
 subdir-	+= basic dtc gdb kconfig mod

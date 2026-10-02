@@ -1,3 +1,6 @@
+# [Fuck4DuerOS] sprd_shm.c 用 #include <trusty.h> 包含本目录头文件。
+ccflags-y += -I$(src)
+
 #
 # Makefile for trusty components
 #

@@ -23,7 +23,11 @@
 
 #define zram_clear_flag(zram, index, flag) (zram->table[index].flags &= ~BIT(flag))
 
-#define zram_set_element(zram, index, element) (zram->table[index].element = element)
+/* [Fuck4DuerOS] 原为 (zram, index, element) (zram->table[index].element = element)，
+ * 参数名 element 与成员名 element 相同，预处理器会把 `.element` 里的 element 也替换掉，
+ * 于是 zram_set_element(zram, index, blk_idx) 展开成 zram->table[index].blk_idx，
+ * 报 "no member named 'blk_idx'"。改参数名即可。 */
+#define zram_set_element(zram, index, val) (zram->table[index].element = (val))
 
 #define zram_get_obj_size(zram, index) (zram->table[index].flags & (BIT(ZRAM_FLAG_SHIFT) - 1))
 

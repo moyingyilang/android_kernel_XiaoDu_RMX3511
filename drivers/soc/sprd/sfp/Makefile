@@ -1,3 +1,6 @@
+# [Fuck4DuerOS] sfp_tuple.c 等用 #include <sfp.h> 包含同目录头文件。
+ccflags-y += -I$(src)
+
 GCOV_PROFILE = ${CONFIG_SPRD_SFP_GCOV}
 obj-$(CONFIG_SPRD_SFP_SUPPORT)  += sfp_core.o
 

@@ -484,11 +484,18 @@ LINUXINCLUDE    := \
 		$(USERINCLUDE)
 
 KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-PIE
-KBUILD_CFLAGS   := -Wall -Werror -Wundef -Werror=strict-prototypes -Wno-trigraphs \
+# [Fuck4DuerOS] 厂商原本在此硬编码 -Werror，导致展锐私有驱动里任何格式串
+# 警告都会中断编译。上游的做法是用 CONFIG_WERROR 控制，这里恢复成上游行为
+# （本设备配置未开 CONFIG_WERROR，警告不再致命）。
+KBUILD_CFLAGS   := -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE \
 		   -Werror=implicit-function-declaration -Werror=implicit-int \
 		   -Werror=return-type -Wno-format-security \
 		   -std=gnu89
+ifdef CONFIG_WERROR
+KBUILD_CFLAGS	+= -Werror
+endif
+
 KBUILD_CPPFLAGS := -D__KERNEL__
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=

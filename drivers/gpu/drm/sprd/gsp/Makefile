@@ -1,3 +1,7 @@
+# [Fuck4DuerOS] gsp_r6p0/gsp_r6p0_core.h 用 #include "gsp_core.h" 包含父目录
+# （gsp/）下的头文件，引号形式只搜当前目录，需补 -I。
+ccflags-y += -I$(src)
+
 # SPDX-License-Identifier: GPL-2.0
 
 sprd-gsp-$(CONFIG_DRM_SPRD_GSP) += gsp_r6p0/gsp_r6p0_core.o \

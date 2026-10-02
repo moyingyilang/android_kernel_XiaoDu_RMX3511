@@ -1,3 +1,7 @@
+# [Fuck4DuerOS] tp_usb_notifier.c 用 #include <tp_usb_notifier.h>（尖括号）
+# 包含同目录头文件，需显式加 -I。
+ccflags-y += -I$(src)
+
 BUILD_INFAE := spi
 BUILD_PLATFORM := qcom
 BUILD_MODULE := y

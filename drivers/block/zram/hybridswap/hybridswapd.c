@@ -654,8 +654,10 @@ static int swapd_single_memcg_param_show(struct seq_file *m, void *v)
 	if (!hybs)
 		return -EINVAL;
 
+	/* [Fuck4DuerOS] atomic64_read 返回 s64，用 %lu 会被 -Werror=format 拦下，
+	 * 显式转成 unsigned long。 */
 	seq_printf(m, "memcg score: %lu\n",
-			atomic64_read(&hybs->app_score));
+			(unsigned long)atomic64_read(&hybs->app_score));
 	seq_printf(m, "memcg ub_mem2zram_ratio: %u\n",
 			atomic_read(&hybs->ub_mem2zram_ratio));
 	seq_printf(m, "memcg ub_zram2ufs_ratio: %u\n",

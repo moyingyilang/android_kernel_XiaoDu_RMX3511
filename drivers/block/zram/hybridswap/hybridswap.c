@@ -727,7 +727,9 @@ ssize_t hybridswap_report_show(struct device *dev,
 	return hybridswap_error_record_show(buf);
 }
 
-static inline meminfo_show(struct hybridswap_stat *stat, char *buf, ssize_t len)
+/* [Fuck4DuerOS] 原为 static inline meminfo_show(...)，缺返回类型，
+ * 触发 -Werror=return-type。函数体返回 ssize_t 的 size，补上。 */
+static inline ssize_t meminfo_show(struct hybridswap_stat *stat, char *buf, ssize_t len)
 {
 	unsigned long eswap_total_pages = 0, eswap_compressed_pages = 0;
 	unsigned long eswap_used_pages = 0;
