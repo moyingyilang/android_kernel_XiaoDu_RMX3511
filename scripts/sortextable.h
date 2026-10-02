@@ -1,3 +1,13 @@
+/* [Fuck4DuerOS] Android/Termux 的 /usr/include/linux/elf.h 里
+ * ELF32_ST_TYPE / ELF64_ST_TYPE 是「递归宏」：
+ *     #define ELF32_ST_TYPE(x) ELF_ST_TYPE(x)
+ * 展开成自身后预处理器停止递归，最终变成未声明的函数调用。
+ * 所以这里不能判断 #ifndef（它确实"已定义"），必须 undef 后重定义。 */
+#undef ELF32_ST_TYPE
+#define ELF32_ST_TYPE(val)	((val) & 0xf)
+#undef ELF64_ST_TYPE
+#define ELF64_ST_TYPE(val)	((val) & 0xf)
+
 /* SPDX-License-Identifier: GPL-2.0-only */
 /*
  * sortextable.h
@@ -207,3 +217,4 @@ do_func(Elf_Ehdr *ehdr, char const *const fname, table_sort_t custom_sort)
 	/* We sorted it, clear the flag. */
 	w(0, sort_done_location);
 }
+

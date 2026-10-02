@@ -2,10 +2,12 @@ menu "KernelSU"
 
 config KSU
 	tristate "KernelSU function support"
-	depends on OVERLAY_FS
+	depends on KPROBES && EXT4_FS
 	default y
 	help
 	  Enable kernel-level root privileges on Android System.
+	  Requires CONFIG_KPROBES for kernel hooking support.
+	  Requires CONFIG_EXT4_FS for `ext4_unregister_sysfs`.
 	  To compile as a module, choose M here: the
 	  module will be called kernelsu.
 
@@ -16,87 +18,29 @@ config KSU_DEBUG
 	help
 	  Enable KernelSU debug mode.
 
-menu "KernelSU - SUSFS"
-config KSU_SUSFS
-    bool "KernelSU addon - SUSFS"
-    depends on KSU
-    default y
-    help
-      Patch and Enable SUSFS to kernel with KernelSU.
+config KSU_DISABLE_MANAGER
+	bool "Disable KernelSU manager integration"
+	depends on KSU
+	default n
+	help
+	  Disable manager APK detection and manager-specific handling.
+	  Root will be used in place of manager-only functionality.
 
-config KSU_SUSFS_SUS_PATH
-    bool "Enable to hide suspicious path (NOT recommended)"
-    depends on KSU_SUSFS
-    default y
-    help
-      - Allow hiding the user-defined path and all its sub-paths from various system calls.
-      - Effective on process with uid > 2000 only.
-      - Use with cautious as it may cause performance loss and will be vulnerable to side channel attacks,
-        just disable this feature if it doesn't work for you or you don't need it at all.
+config KSU_DISABLE_POLICY
+	bool "Disable KernelSU policy profiles"
+	depends on KSU
+	default n
+	help
+	  Disable per-app root/non-root profile customization.
+	  Escalation will always use the default full root profile, and
+	  non-root handling will follow the global umount policy only.
 
-config KSU_SUSFS_SUS_MOUNT
-    bool "Enable to hide suspicious mounts"
-    depends on KSU_SUSFS
-    default y
-    help
-      - Allow hiding the user-defined mount paths from /proc/self/[mounts|mountinfo|mountstat].
-      - Effective on all processes for hiding mount entries.
-      - The mnt_id, parent_mnt_id and mnt_group_id will be reordered as well in mountinfo while the actual values are remained unchanged in kernel,
-        and this reorder function will be effective on all processes spawned only by the zygote process.
-
-config KSU_SUSFS_SUS_KSTAT
-    bool "Enable to spoof suspicious kstat"
-    depends on KSU_SUSFS
-    default y
-    help
-      - Allow spoofing the kstat of user-defined file/directory.
-      - Effective on all processes.
-
-config KSU_SUSFS_SUS_OVERLAYFS
-    bool "Enable to automatically spoof kstat and kstatfs for overlayed files/directories"
-    depends on KSU_SUSFS
-    default y
-    help
-      - Automatically spoof the kstat and kstatfs for overlayed files/directories.
-      - No susfs command is needed in userspace.
-      - Effective on all processes.
-
-config KSU_SUSFS_TRY_UMOUNT
-    bool "Enable to use ksu's try_umount"
-    depends on KSU_SUSFS
-    default y
-    help
-      - Allow using ksu's umount to umount other user-defined mount paths prior to ksu's default umount paths.
-      - Effective on all NO-root-access-granted processes.
-
-config KSU_SUSFS_SPOOF_UNAME
-    bool "Enable to spoof uname"
-    depends on KSU_SUSFS
-    default y
-    help
-      - Allow spoofing the string returned by uname syscall to user-defined string.
-      - Effective on all processes.
-      
-config KSU_SUSFS_ENABLE_LOG
-    bool "Enable logging susfs log to kernel"
-    depends on KSU_SUSFS
-    default y
-    help
-      - Allow logging susfs log to kernel, uncheck it to completely disable all susfs log.
-
-config KSU_SUSFS_SUS_SU
-    bool "Enable SUS-SU in runtime temporarily (experimental)"
-    depends on KSU_SUSFS
-    default y
-    help
-      - Allow user to enable or disable core ksu kprobes hooks temporarily in runtime.
-      - When enabling sus_su, kprobes of ksu will be disabled, and a fifo driver will be created in /dev/[random_string].
-        (for first time only), then user needs to mount the 'sus_su' to /system/bin/su using overlayfs or whatever techniques,
-        and run 'su' to get root shell from the fifo driver. Or, refer to the method in service.sh from module template.
-      - When disabling sus_su, kprobes of ksu will be enabled again, and the fifo driver will be deleted.
-      - Only apps with root access granted by ksu manager are allowed to get root.
-      - Also overlayfs is required.
-
-endmenu
+config KSU_X86_PATCH_SYSCALL_DISPATCHER
+	bool "Dynamically patch x64's hardened syscall dispatcher to support syscall hooks"
+	depends on KSU && X86_64
+	default n
+	help
+	  Dynamically patch x64's hardened syscall dispatcher to support syscall hooks. This is a
+	  replacement for a kernel source code patch, and is useful for x86_64 LKM mode.
 
 endmenu
